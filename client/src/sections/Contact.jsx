@@ -26,12 +26,10 @@ function Contact() {
   // ================= HANDLE INPUT =================
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   // ================= SUBMIT FORM =================
@@ -39,33 +37,34 @@ function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     setStatus({
       type: "",
       message: "",
     });
 
-    setLoading(true);
-
     try {
-      const response = await fetch("http://localhost:5000/api/contact", {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/contact`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
         },
-
-        body: JSON.stringify(formData),
-      });
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Something went wrong.");
+        throw new Error(data.message || "Something went wrong");
       }
 
       setStatus({
         type: "success",
-        message: "Thanks! Your message has been sent successfully.",
+        message: "Message sent successfully!",
       });
 
       // Clear form
@@ -76,10 +75,11 @@ function Contact() {
         message: "",
       });
     } catch (error) {
+      console.error("Contact form error:", error);
+
       setStatus({
         type: "error",
-        message:
-          error.message || "Unable to send your message. Please try again.",
+        message: error.message || "Failed to send message.",
       });
     } finally {
       setLoading(false);
@@ -106,13 +106,13 @@ function Contact() {
           transition={{
             duration: 0.6,
           }}
-          className="mb-12 text-center sm:mb-14"
+          className="mb-14 text-center"
         >
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
             Let's Connect
           </h2>
 
-          <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
+          <p className="mx-auto mt-5 max-w-2xl text-slate-400">
             I'm always open to discussing software development opportunities,
             projects and interesting ideas.
           </p>
@@ -123,7 +123,7 @@ function Contact() {
         {/* ================= CONTENT ================= */}
 
         <div className="grid gap-8 md:grid-cols-2">
-          {/* ================= LEFT ================= */}
+          {/* ================= LEFT SIDE ================= */}
 
           <motion.div
             initial={{
@@ -143,12 +143,12 @@ function Contact() {
           >
             <h3 className="text-2xl font-semibold text-white">Get in Touch</h3>
 
-            <p className="mt-5 max-w-lg text-sm leading-7 text-slate-400 sm:text-base sm:leading-8">
+            <p className="mt-5 max-w-lg leading-8 text-slate-400">
               Whether you have a job opportunity, project idea or simply want to
               connect, feel free to reach out.
             </p>
 
-            {/* Contact Information */}
+            {/* ================= CONTACT INFO ================= */}
 
             <div className="mt-8 space-y-5">
               {/* Email */}
@@ -157,14 +157,14 @@ function Contact() {
                 href="mailto:varshilshah25@gmail.com"
                 className="group flex items-center gap-4"
               >
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 transition-all duration-300 group-hover:scale-110">
-                  <FaEnvelope size={20} />
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 transition-all duration-300 group-hover:scale-110">
+                  <FaEnvelope size={22} />
                 </div>
 
                 <div className="min-w-0">
                   <p className="text-sm text-slate-500">Email</p>
 
-                  <p className="mt-1 break-all text-sm text-slate-300 transition-colors group-hover:text-blue-400 sm:text-base">
+                  <p className="mt-1 break-all text-slate-300 transition-colors group-hover:text-blue-400">
                     varshilshah25@gmail.com
                   </p>
                 </div>
@@ -173,49 +173,53 @@ function Contact() {
               {/* Location */}
 
               <div className="flex items-center gap-4">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
-                  <FaMapPin size={20} />
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
+                  <FaMapPin size={22} />
                 </div>
 
                 <div>
                   <p className="text-sm text-slate-500">Location</p>
 
-                  <p className="mt-1 text-sm text-slate-300 sm:text-base">
-                    Gujarat, India
-                  </p>
+                  <p className="mt-1 text-slate-300">Gujarat, India</p>
                 </div>
               </div>
             </div>
 
-            {/* Social Links */}
+            {/* ================= SOCIAL LINKS ================= */}
 
-            <div className="mt-8 flex items-center gap-3">
+            <div className="mt-8 flex items-center gap-4">
+              {/* GitHub */}
+
               <a
                 href="https://github.com/Varshil2611/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-slate-400 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:text-white"
                 aria-label="GitHub"
+                className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-slate-400 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:text-white"
               >
-                <FaGithub size={18} />
+                <FaGithub size={20} />
               </a>
+
+              {/* LinkedIn */}
 
               <a
                 href="https://www.linkedin.com/in/varshil-shah-b2504b30a"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-slate-400 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:text-white"
                 aria-label="LinkedIn"
+                className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-slate-400 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:text-white"
               >
-                <FaLinkedin size={18} />
+                <FaLinkedin size={20} />
               </a>
+
+              {/* Instagram */}
 
               <a
                 href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-slate-400 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:text-white"
                 aria-label="Instagram"
+                className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-slate-400 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:text-white"
               >
-                <FaInstagram size={18} />
+                <FaInstagram size={20} />
               </a>
             </div>
           </motion.div>
@@ -238,7 +242,7 @@ function Contact() {
             transition={{
               duration: 0.6,
             }}
-            className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-8"
+            className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8"
           >
             {/* Name */}
 
@@ -256,10 +260,9 @@ function Contact() {
                 type="text"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Your name"
                 required
-                maxLength={100}
-                className="w-full rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-slate-600 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30"
+                placeholder="Your name"
+                className="w-full rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-slate-600 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20"
               />
             </div>
 
@@ -279,10 +282,9 @@ function Contact() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="your@email.com"
                 required
-                maxLength={150}
-                className="w-full rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-slate-600 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30"
+                placeholder="your@email.com"
+                className="w-full rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-slate-600 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20"
               />
             </div>
 
@@ -301,26 +303,23 @@ function Contact() {
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                rows={5}
-                maxLength={2000}
                 required
+                rows="5"
                 placeholder="Tell me about your project or opportunity..."
-                className="w-full resize-none rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-slate-600 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30"
+                className="w-full resize-none rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-slate-600 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20"
               />
             </div>
 
             {/* Status */}
 
             {status.message && (
-              <div
-                className={`mt-4 rounded-lg border px-4 py-3 text-sm ${
-                  status.type === "success"
-                    ? "border-green-500/20 bg-green-500/10 text-green-400"
-                    : "border-red-500/20 bg-red-500/10 text-red-400"
+              <p
+                className={`mt-4 text-sm ${
+                  status.type === "success" ? "text-green-400" : "text-red-400"
                 }`}
               >
                 {status.message}
-              </div>
+              </p>
             )}
 
             {/* Submit */}
@@ -330,13 +329,16 @@ function Contact() {
               disabled={loading}
               className="group mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-all duration-300 hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/20 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Sending..." : "Send Message"}
-
-              {!loading && (
-                <FaPaperPlane
-                  size={16}
-                  className="transition-transform duration-300 group-hover:translate-x-1"
-                />
+              {loading ? (
+                "Sending..."
+              ) : (
+                <>
+                  Send Message
+                  <FaPaperPlane
+                    size={18}
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  />
+                </>
               )}
             </button>
           </motion.form>

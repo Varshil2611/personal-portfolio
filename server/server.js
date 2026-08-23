@@ -15,13 +15,15 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://personal-portfolio-dusky-ten-37.vercel.app",
+    methods: ["GET", "POST"],
+    credentials: false,
   }),
 );
 
 app.use(express.json());
 
-// ================= ROUTES =================
+// ================= HEALTH CHECK =================
 
 app.get("/", (req, res) => {
   res.json({
@@ -29,6 +31,8 @@ app.get("/", (req, res) => {
     message: "Portfolio API is running",
   });
 });
+
+// ================= CONTACT ROUTES =================
 
 app.use("/api/contact", contactRoutes);
 
@@ -40,7 +44,7 @@ mongoose
     console.log("MongoDB connected");
 
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`Server running on port ${PORT}`);
     });
   })
   .catch((error) => {
